@@ -49,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        HandleGravity();
         HandleRotation();
         _characterController.Move(_currentMovement * Time.deltaTime);
     }
@@ -119,6 +120,20 @@ public class PlayerMovement : MonoBehaviour
                 Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
                 transform.rotation = Quaternion.Slerp(rotation, targetRotation, rotationPerFrame * Time.deltaTime);
             }
+        }
+    }
+
+    private void HandleGravity()
+    {
+        if (_characterController.isGrounded)
+        {
+            float groundedGravity = -0.05f;
+            _currentMovement.y = groundedGravity;
+        }
+        else
+        {
+            float gravity = -9.81f * Time.deltaTime;
+            _currentMovement.y += gravity;
         }
     }
 

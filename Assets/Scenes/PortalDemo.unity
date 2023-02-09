@@ -1060,6 +1060,11 @@ PrefabInstance:
       propertyPath: portals
       value: 
       objectReference: {fileID: 5574568897832895865}
+    - target: {fileID: 2813213505825980658, guid: 3ac18b32c97ba59448da0d18c0ea9ac9,
+        type: 3}
+      propertyPath: m_Center.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ac18b32c97ba59448da0d18c0ea9ac9, type: 3}
 --- !u!114 &3643344765294230057 stripped
