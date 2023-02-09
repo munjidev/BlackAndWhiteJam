@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.ProBuilder.MeshOperations;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -41,6 +42,8 @@ public class PlayerMovement : MonoBehaviour
         _playerInput.CharacterControls.Move.performed += OnMovementInput;
         
         // Track and update mouse input
+        _playerInput.CharacterControls.Move.started += OnMouseInput;
+        _playerInput.CharacterControls.Move.canceled += OnMouseInput;
         _playerInput.CharacterControls.Mouse.performed += OnMouseInput;
     }
 
@@ -74,9 +77,15 @@ public class PlayerMovement : MonoBehaviour
         _mousePositionInput = ctx.ReadValue<Vector2>();
         _mousePosition.x = _mousePositionInput.x;
         _mousePosition.z = _mousePositionInput.y;
-        // If context is cancelled, mouse activity is false
-        _isMouseActive = _mousePositionInput.x != 0 || _mousePositionInput.y != 0;
-        Debug.Log("Mouse activity: " + _isMouseActive);
+
+        if (ctx.started || ctx.performed)
+        {
+            _isMouseActive = true;
+        }
+        else if (ctx.canceled)
+        {
+            _isMouseActive = false;
+        }
     }
 
     private void HandleRotation()
