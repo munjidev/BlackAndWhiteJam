@@ -33,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
         _characterController = GetComponent<CharacterController>();
         
         _camera = Camera.main;
+        TargetRotation = transform.rotation;
         
         // Set callbacks to listen for mapped actions
         
