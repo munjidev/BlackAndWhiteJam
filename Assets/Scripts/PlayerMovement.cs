@@ -6,14 +6,14 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private Rigidbody _rb;
     [SerializeField] private float _movementSpeed = 5f;
-    [SerializeField] private float _rotationSpeed = 1080f;
+    [SerializeField] private float _rotationSpeed = 900f;
     public Quaternion TargetRotation { private set; get; }
-    
+
     private LayerMask layerMask;
 
     private Vector3 _input;
     private Vector3 _mouseInput;
-    
+
     private Camera _camera;
 
     private void Start()
@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
         _camera = Camera.main;
         TargetRotation = transform.rotation;
     }
+
     private void Update()
     {
         GatherInput();
@@ -45,11 +46,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovePlayer()
     {
-        _rb.MovePosition(transform.position + transform.forward * (_input.normalized.magnitude * _movementSpeed * Time.deltaTime));
+        _rb.MovePosition(transform.position +
+                         transform.forward * (_input.normalized.magnitude * _movementSpeed * Time.deltaTime));
     }
 
     private void LookDirection()
     {
+        // If no keyboard input is detected, have player stand still
         if (_input != Vector3.zero)
         {
             // Perform smooth rotation accounting for rotation speed
@@ -57,7 +60,24 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation =
                 Quaternion.RotateTowards(transform.rotation, rotation, _rotationSpeed * Time.deltaTime);
         }
+        // Else ff mouse input is detected, have player look in that direction
+        else if (_mouseInput != Vector3.zero)
+        {
+            // Attempt raycast to obtain look direction
+            var ray = _camera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out var hitInfo))
+            {
+                var lookDirection = hitInfo.point - transform.position;
+                lookDirection.y = 0;
+                var rot = Quaternion.LookRotation(lookDirection);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, _rotationSpeed * Time.deltaTime);
+            }
+        }
     }
+
+    /// <summary>
+    ///     Resets transform's rotation after warp.
+    /// </summary>
     public void ResetTargetRotation()
     {
         TargetRotation = Quaternion.LookRotation(transform.forward, Vector3.up);
