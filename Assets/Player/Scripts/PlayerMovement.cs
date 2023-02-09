@@ -1,76 +1,114 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private Rigidbody _rb;
-    [SerializeField] private float _movementSpeed = 5f;
-    [SerializeField] private float _rotationSpeed = 900f;
     public Quaternion TargetRotation { private set; get; }
-
-    private LayerMask layerMask;
-
-    private Vector3 _input;
-    private Vector3 _mouseInput;
-
+    private PlayerInput _playerInput;
+    private CharacterController _characterController;
+    
+    // Store player input values
+    private Vector2 _currentMovementInput;
+    private Vector3 _currentMovement;
+    private bool _isMovementPressed;
+    
+    // Store mouse position
+    private Vector2 _mousePositionInput;
+    private Vector3 _mousePosition;
+    private bool _isMouseActive;
+    
     private Camera _camera;
 
-    private void Start()
+    [SerializeField] private float rotationPerFrame = 360.0f;
+
+    private void Awake()
     {
+        // Access action maps
+        _playerInput = new PlayerInput();
+
+        _characterController = GetComponent<CharacterController>();
+        
         _camera = Camera.main;
-        TargetRotation = transform.rotation;
+        
+        // Set callbacks to listen for mapped actions
+        
+        // Track and update movement input
+        _playerInput.CharacterControls.Move.started += OnMovementInput;
+        _playerInput.CharacterControls.Move.canceled += OnMovementInput;
+        _playerInput.CharacterControls.Move.performed += OnMovementInput;
+        
+        // Track and update mouse input
+        _playerInput.CharacterControls.Mouse.performed += OnMouseInput;
     }
 
     private void Update()
     {
-        GatherInput();
-        LookDirection();
+        HandleRotation();
+        _characterController.Move(_currentMovement * Time.deltaTime);
     }
 
-    private void FixedUpdate()
+    private void OnEnable()
     {
-        MovePlayer();
+        _playerInput.CharacterControls.Enable();
     }
 
-    /// <summary>
-    ///     Returns horizontal and vertical player input with no smoothing filtering applied.
-    /// </summary>
-    private void GatherInput()
+    private void OnDisable()
     {
-        // Gather movement
-        _input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-        // Gather mouse movement
-        _mouseInput = new Vector3(Input.GetAxisRaw("Mouse X"), 0, Input.GetAxisRaw("Mouse Y"));
+        _playerInput.CharacterControls.Disable();
     }
 
-    private void MovePlayer()
+    private void OnMovementInput(InputAction.CallbackContext ctx)
     {
-        _rb.MovePosition(transform.position +
-                         transform.forward * (_input.normalized.magnitude * _movementSpeed * Time.deltaTime));
+        _currentMovementInput = ctx.ReadValue<Vector2>();
+        _currentMovement.x = _currentMovementInput.x;
+        _currentMovement.z = _currentMovementInput.y;
+        _isMovementPressed = _currentMovementInput.x != 0 || _currentMovementInput.y != 0;
+    }
+    
+    private void OnMouseInput(InputAction.CallbackContext ctx)
+    {
+        // Convert mouse input from screen space to world space
+        _mousePositionInput = ctx.ReadValue<Vector2>();
+        _mousePosition.x = _mousePositionInput.x;
+        _mousePosition.z = _mousePositionInput.y;
+        // If context is cancelled, mouse activity is false
+        _isMouseActive = _mousePositionInput.x != 0 || _mousePositionInput.y != 0;
+        Debug.Log("Mouse activity: " + _isMouseActive);
     }
 
-    private void LookDirection()
+    private void HandleRotation()
     {
-        // If no keyboard input is detected, have player stand still
-        if (_input != Vector3.zero)
+        Vector3 lookDirection;
+        Quaternion rotation = transform.rotation;
+        
+        // Rotate the player towards look direction
+        if (_isMovementPressed)
         {
-            // Perform smooth rotation accounting for rotation speed
-            var rotation = Quaternion.LookRotation(_input.ToIsometric(), Vector3.up);
-            transform.rotation =
-                Quaternion.RotateTowards(transform.rotation, rotation, _rotationSpeed * Time.deltaTime);
+            // Change towards position the player should point towards
+            lookDirection.x = _currentMovement.x;
+            lookDirection.y = 0.0f;
+            lookDirection.z = _currentMovement.z;
+            
+            // Perform spherical interpolation between current rotation and target rotation
+            Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+            transform.rotation = Quaternion.Slerp(rotation, targetRotation, rotationPerFrame * Time.deltaTime);
         }
-        // Else ff mouse input is detected, have player look in that direction
-        else if (_mouseInput != Vector3.zero)
+        else if (_isMouseActive)
         {
-            // Attempt raycast to obtain look direction
-            var ray = _camera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out var hitInfo))
+            Ray ray = _camera.ScreenPointToRay(_mousePosition);
+            
+            if(Physics.Raycast(ray, out RaycastHit hit))
             {
-                var lookDirection = hitInfo.point - transform.position;
-                lookDirection.y = 0;
-                var rot = Quaternion.LookRotation(lookDirection);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, _rotationSpeed * Time.deltaTime);
+                // Change in the direction the player is pointing towards
+                lookDirection = hit.point - transform.position;
+                lookDirection.y = 0.0f;
+            
+                // Perform spherical interpolation between current rotation and target rotation
+                Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+                transform.rotation = Quaternion.Slerp(rotation, targetRotation, rotationPerFrame * Time.deltaTime);
             }
         }
     }
