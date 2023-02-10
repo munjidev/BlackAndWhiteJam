@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,8 +6,11 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private Rigidbody _rb;
-    [SerializeField] private float _movementSpeed = 5f;
-    [SerializeField] private float _rotationSpeed = 900f;
+    [SerializeField] private float _movementSpeed = 5.0f;
+    [SerializeField] private float _rotationSpeed = 720.0f;
+    [SerializeField] private float _jumpSpeed = 5.0f;
+    public bool isGrounded = true;
+
     public Quaternion TargetRotation { private set; get; }
 
     private LayerMask layerMask;
@@ -25,12 +29,12 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         GatherInput();
-        LookDirection();
     }
 
     private void FixedUpdate()
     {
         MovePlayer();
+        LookDirection();
     }
 
     /// <summary>
@@ -42,6 +46,17 @@ public class PlayerMovement : MonoBehaviour
         _input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         // Gather mouse movement
         _mouseInput = new Vector3(Input.GetAxisRaw("Mouse X"), 0, Input.GetAxisRaw("Mouse Y"));
+        // Gather jumping
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            HandleJumping();
+        }
+    }
+
+    private void HandleJumping()
+    {
+        _rb.AddForce(Vector3.up * _jumpSpeed, ForceMode.Impulse);
+        isGrounded = false;
     }
 
     private void MovePlayer()
@@ -72,6 +87,14 @@ public class PlayerMovement : MonoBehaviour
                 var rot = Quaternion.LookRotation(lookDirection);
                 transform.rotation = Quaternion.Slerp(transform.rotation, rot, _rotationSpeed * Time.deltaTime);
             }
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
         }
     }
 
