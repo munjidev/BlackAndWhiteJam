@@ -386,7 +386,7 @@ GameObject:
   - component: {fileID: 1219612543}
   m_Layer: 9
   m_Name: Platform
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1089,6 +1089,11 @@ PrefabInstance:
       propertyPath: portals
       value: 
       objectReference: {fileID: 5574568897832895865}
+    - target: {fileID: 5458542682547418925, guid: 3ac18b32c97ba59448da0d18c0ea9ac9,
+        type: 3}
+      propertyPath: _jumpSpeed
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ac18b32c97ba59448da0d18c0ea9ac9, type: 3}
 --- !u!114 &5574568897832895865 stripped
@@ -1110,6 +1115,36 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 45515735796001993, guid: be1c87aa377705f4c9524abc73bed8e4,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9961947
+      objectReference: {fileID: 0}
+    - target: {fileID: 45515735796001993, guid: be1c87aa377705f4c9524abc73bed8e4,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.08715578
+      objectReference: {fileID: 0}
+    - target: {fileID: 45515735796001993, guid: be1c87aa377705f4c9524abc73bed8e4,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 45515735796001993, guid: be1c87aa377705f4c9524abc73bed8e4,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 45515735796001993, guid: be1c87aa377705f4c9524abc73bed8e4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 45515735796001993, guid: be1c87aa377705f4c9524abc73bed8e4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1618798700725237716, guid: be1c87aa377705f4c9524abc73bed8e4,
         type: 3}
       propertyPath: m_CullingMask.m_Bits
