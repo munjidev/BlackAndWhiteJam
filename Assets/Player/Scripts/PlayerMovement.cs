@@ -1,23 +1,18 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private Rigidbody _rb;
-    [SerializeField] private float _movementSpeed = 5.0f;
-    [SerializeField] private float _rotationSpeed = 720.0f;
-    [SerializeField] private float _jumpSpeed = 5.0f;
-    public bool isGrounded = true;
-
     public Quaternion TargetRotation { private set; get; }
-
-    private LayerMask layerMask;
-
-    private Vector3 _input;
+    
+    [SerializeField] private float _movementSpeed = 3.0f;
+    [SerializeField] private float _rotationSpeed = 720.0f;
+    [SerializeField] private float _jumpSpeed = 3.0f;
+    [SerializeField] private Rigidbody _rb;
+    
+    private bool _isGrounded = true;
+    private LayerMask _layerMask;
     private Vector3 _mouseInput;
-
+    private Vector3 _input;
     private Camera _camera;
 
     private void Start()
@@ -42,12 +37,10 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void GatherInput()
     {
-        // Gather movement
         _input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-        // Gather mouse movement
         _mouseInput = new Vector3(Input.GetAxisRaw("Mouse X"), 0, Input.GetAxisRaw("Mouse Y"));
-        // Gather jumping
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        
+        if (Input.GetButtonDown("Jump") && _isGrounded)
         {
             HandleJumping();
         }
@@ -56,13 +49,19 @@ public class PlayerMovement : MonoBehaviour
     private void HandleJumping()
     {
         _rb.AddForce(Vector3.up * _jumpSpeed, ForceMode.Impulse);
-        isGrounded = false;
+        
+        _isGrounded = false;
     }
 
     private void MovePlayer()
     {
-        _rb.MovePosition(transform.position +
-                         transform.forward * (_input.normalized.magnitude * _movementSpeed * Time.deltaTime));
+        // If player is falling, reduce movement speed to 1f
+        _movementSpeed = _rb.velocity.y < 0 ? 1.0f : 3.0f;
+        
+        Transform playerTransform = transform;
+        
+        _rb.MovePosition(playerTransform.position +
+                         playerTransform.forward * (_input.normalized.magnitude * _movementSpeed * Time.deltaTime));
     }
 
     private void LookDirection()
@@ -71,7 +70,8 @@ public class PlayerMovement : MonoBehaviour
         if (_input != Vector3.zero)
         {
             // Perform smooth rotation accounting for rotation speed
-            var rotation = Quaternion.LookRotation(_input.ToIsometric(), Vector3.up);
+            Quaternion rotation = Quaternion.LookRotation(_input.ToIsometric(), Vector3.up);
+            
             transform.rotation =
                 Quaternion.Slerp(transform.rotation, rotation, _rotationSpeed * Time.deltaTime);
         }
@@ -79,12 +79,15 @@ public class PlayerMovement : MonoBehaviour
         else if (_mouseInput != Vector3.zero)
         {
             // Attempt raycast to obtain look direction
-            var ray = _camera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
+            
             if (Physics.Raycast(ray, out var hitInfo))
             {
-                var lookDirection = hitInfo.point - transform.position;
+                Vector3 lookDirection = hitInfo.point - transform.position;
                 lookDirection.y = 0;
-                var rot = Quaternion.LookRotation(lookDirection);
+                
+                Quaternion rot = Quaternion.LookRotation(lookDirection);
+                
                 transform.rotation = Quaternion.Slerp(transform.rotation, rot, _rotationSpeed * Time.deltaTime);
             }
         }
@@ -94,7 +97,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = true;
+            _isGrounded = true;
         }
     }
 
