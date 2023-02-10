@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,6 +19,12 @@ public class PortalPlacement : MonoBehaviour
         _camera = Camera.main;
     }
 
+    // private void Start()
+    // {   
+    //     // Automatically place second portal at -7, -9.5, -7
+    //     FirePortal(1, transform.position, new Vector3(-7f, -9.5f, -7f), Mathf.Infinity);
+    // }
+
     private void Update()
     {
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
@@ -28,10 +35,10 @@ public class PortalPlacement : MonoBehaviour
         {
             FirePortal(0, transform.position, hitInfo.point - transform.position, Mathf.Infinity);
         }
-        else if (Input.GetButtonDown("Fire2"))
-        {
-            FirePortal(1, transform.position, hitInfo.point - transform.position, Mathf.Infinity);
-        }
+        // else if (Input.GetButtonDown("Fire2"))
+        // {
+        //     FirePortal(1, transform.position, hitInfo.point - transform.position, Mathf.Infinity);
+        // }
     }
 
     private void FirePortal(int portalID, Vector3 pos, Vector3 dir, float distance)
