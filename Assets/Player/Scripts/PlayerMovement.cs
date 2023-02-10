@@ -75,7 +75,7 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation =
                 Quaternion.Slerp(transform.rotation, rotation, _rotationSpeed * Time.deltaTime);
         }
-        // Else ff mouse input is detected, have player look in that direction
+        // Else if mouse input is detected, have player look in that direction
         else if (_mouseInput != Vector3.zero)
         {
             // Attempt raycast to obtain look direction
