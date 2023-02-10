@@ -58,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
             // Perform smooth rotation accounting for rotation speed
             var rotation = Quaternion.LookRotation(_input.ToIsometric(), Vector3.up);
             transform.rotation =
-                Quaternion.RotateTowards(transform.rotation, rotation, _rotationSpeed * Time.deltaTime);
+                Quaternion.Slerp(transform.rotation, rotation, _rotationSpeed * Time.deltaTime);
         }
         // Else ff mouse input is detected, have player look in that direction
         else if (_mouseInput != Vector3.zero)
@@ -70,7 +70,7 @@ public class PlayerMovement : MonoBehaviour
                 var lookDirection = hitInfo.point - transform.position;
                 lookDirection.y = 0;
                 var rot = Quaternion.LookRotation(lookDirection);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, _rotationSpeed * Time.deltaTime);
+                transform.rotation = Quaternion.Slerp(transform.rotation, rot, _rotationSpeed * Time.deltaTime);
             }
         }
     }
