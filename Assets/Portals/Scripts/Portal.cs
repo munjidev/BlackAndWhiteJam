@@ -105,10 +105,10 @@ public class Portal : MonoBehaviour
     {
         var testPoints = new List<Vector3>
         {
-            new Vector3(-1.1f,  0.0f, 0.1f),
-            new Vector3( 1.1f,  0.0f, 0.1f),
-            new Vector3( 0.0f, -2.1f, 0.1f),
-            new Vector3( 0.0f,  2.1f, 0.1f)
+            new Vector3(-0.44f,  0.0f, 0.1f),
+            new Vector3( 0.44f,  0.0f, 0.1f),
+            new Vector3( 0.0f, -0.44f, 0.1f),
+            new Vector3( 0.0f,  0.44f, 0.1f)
         };
 
         var testDirs = new List<Vector3>
@@ -125,11 +125,11 @@ public class Portal : MonoBehaviour
             Vector3 raycastPos = testTransform.TransformPoint(testPoints[i]);
             Vector3 raycastDir = testTransform.TransformDirection(testDirs[i]);
 
-            if(Physics.CheckSphere(raycastPos, 0.05f, placementMask))
+            if(Physics.CheckSphere(raycastPos, 0.02f, placementMask))
             {
                 break;
             }
-            else if(Physics.Raycast(raycastPos, raycastDir, out hit, 2.1f, placementMask))
+            else if(Physics.Raycast(raycastPos, raycastDir, out hit, 0.44f, placementMask))
             {
                 var offset = hit.point - raycastPos;
                 testTransform.Translate(offset, Space.World);
@@ -148,7 +148,7 @@ public class Portal : MonoBehaviour
             -Vector3.up
         };
 
-        var testDists = new List<float> { 1.1f, 1.1f, 2.1f, 2.1f };
+        var testDists = new List<float> { 0.44f, 0.44f, 0.44f, 0.44f };
 
         for (int i = 0; i < 4; ++i)
         {
@@ -168,16 +168,16 @@ public class Portal : MonoBehaviour
     // Once positioning has taken place, ensure the portal isn't intersecting anything.
     private bool CheckOverlap()
     {
-        var checkExtents = new Vector3(0.9f, 1.9f, 0.05f);
+        var checkExtents = new Vector3(0.36f, 0.36f, 0.05f);
 
         var checkPositions = new Vector3[]
         {
             testTransform.position + testTransform.TransformVector(new Vector3( 0.0f,  0.0f, -0.1f)),
 
-            testTransform.position + testTransform.TransformVector(new Vector3(-1.0f, -2.0f, -0.1f)),
-            testTransform.position + testTransform.TransformVector(new Vector3(-1.0f,  2.0f, -0.1f)),
-            testTransform.position + testTransform.TransformVector(new Vector3( 1.0f, -2.0f, -0.1f)),
-            testTransform.position + testTransform.TransformVector(new Vector3( 1.0f,  2.0f, -0.1f)),
+            testTransform.position + testTransform.TransformVector(new Vector3(-0.4f, -0.4f, -0.1f)),
+            testTransform.position + testTransform.TransformVector(new Vector3(-0.4f,  0.4f, -0.1f)),
+            testTransform.position + testTransform.TransformVector(new Vector3( 0.4f, -0.4f, -0.1f)),
+            testTransform.position + testTransform.TransformVector(new Vector3( 0.4f,  0.4f, -0.1f)),
 
             testTransform.TransformVector(new Vector3(0.0f, 0.0f, 0.2f))
         };
