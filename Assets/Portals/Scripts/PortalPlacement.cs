@@ -19,17 +19,19 @@ public class PortalPlacement : MonoBehaviour
         _camera = Camera.main;
     }
 
-    // private void Start()
-    // {   
-    //     // Automatically place second portal at -7, -9.5, -7
-    //     FirePortal(1, transform.position, new Vector3(-7f, -9.5f, -7f), Mathf.Infinity);
-    // }
+    private void Start()
+    {
+        // Automatically place second portal
+        FirePortal(1, transform.position, new Vector3(-6.5f, -9.5f, -6.5f) - transform.position, Mathf.Infinity);
+    }
 
     private void Update()
     {
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
         Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, layerMask);
+        
         Debug.DrawRay(transform.position, hitInfo.point - transform.position, Color.red);
+        Debug.DrawRay(_camera.transform.position, hitInfo.point - _camera.transform.position, Color.blue);
         
         if(Input.GetButtonDown("Fire1"))
         {
@@ -45,7 +47,7 @@ public class PortalPlacement : MonoBehaviour
     {
         Physics.Raycast(pos, dir, out var hit, distance, layerMask);
 
-        if(hit.collider != null || hit.collider.CompareTag("Portal"))
+        if(hit.collider != null && !hit.collider.CompareTag("Portal") && hit.collider.CompareTag("Ground"))
         {
 
             // Orient the portal according to camera look direction and surface direction.
