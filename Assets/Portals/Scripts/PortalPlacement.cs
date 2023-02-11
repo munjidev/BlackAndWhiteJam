@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class PortalPlacement : MonoBehaviour
 {
@@ -16,16 +17,15 @@ public class PortalPlacement : MonoBehaviour
 
     private void Start()
     {
-        // Place second portal at start.
-        Vector3 trPos = transform.position;
-        FirePortal(1, trPos, new Vector3(-7f, -10f, -7f) - trPos, Mathf.Infinity);
+        // Have camera fire portal 1 at -7, 10, -7
+        FirePortal(1, new Vector3(-7, 10, -7), Vector3.down, Mathf.Infinity);
     }
 
     private void Update()
     {
         Vector3 trPos = transform.position;
         Vector3 trPosCamera = _camera.transform.position;
-        
+
         // Perform raycast towards desired point.
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
         Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, _layerMask);
