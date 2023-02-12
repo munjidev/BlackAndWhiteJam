@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _gravity = -9.81f;
 
     private float _jumpVelocity;
+    private float _distToGround;
     private bool _isJumpPressed;
     private bool _isGrounded;
     private bool _isJumping;
@@ -35,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _camera = Camera.main;
         TargetRotation = transform.rotation;
+        _distToGround = GetComponent<Collider>().bounds.extents.y;
     }
 
     private void Update()
@@ -100,6 +102,8 @@ public class PlayerMovement : MonoBehaviour
     
     private void HandleJump()
     {
+        Debug.DrawRay(transform.position - new Vector3(0f, 0.5f, 0f), Vector3.down, Color.green);
+        
         // If jumping was performed and the player isn't already jumping
         if (!_isJumping && _isGrounded && _isJumpPressed)
         {
@@ -140,7 +144,7 @@ public class PlayerMovement : MonoBehaviour
             // Attempt raycast to obtain look direction
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
             
-            if (Physics.Raycast(ray, out var hitInfo))
+            if (Physics.Raycast(ray, out RaycastHit hitInfo))
             {
                 Vector3 lookDirection = hitInfo.point - transform.position;
                 lookDirection.y = 0;
@@ -154,7 +158,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (Physics.Raycast(transform.position, Vector3.down, _distToGround + 0.1f))
         {
             _isGrounded = true;
             _isJumping = false;
