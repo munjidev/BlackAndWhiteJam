@@ -1,11 +1,10 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PortalPlacement : MonoBehaviour
 {
     [SerializeField] private PortalPair _portals;
     [SerializeField] private LayerMask _layerMask;
-    
+
     private PlayerMovement _playerMovement;
     private Camera _camera;
 
@@ -17,8 +16,10 @@ public class PortalPlacement : MonoBehaviour
 
     private void Start()
     {
-        // Have camera fire portal 1 at -7, 10, -7
-        FirePortal(1, new Vector3(-7, 10, -7), Vector3.down, Mathf.Infinity);
+        Vector3 trPos = transform.position;
+        
+        // Attempt to place second portal
+        FirePortal(1, trPos, new Vector3(0.5f, -12f, 0.5f) - trPos, Mathf.Infinity);
     }
 
     private void Update()
@@ -26,15 +27,14 @@ public class PortalPlacement : MonoBehaviour
         Vector3 trPos = transform.position;
         Vector3 trPosCamera = _camera.transform.position;
 
-        // Perform raycast towards desired point.
+        // Perform raycast towards mouse point.
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-        Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, _layerMask);
+        Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, _layerMask);
         
-        // Raycast visualization from player and character perspectives.
         Debug.DrawRay(trPos, hitInfo.point - trPos, Color.red);
         Debug.DrawRay(trPosCamera, hitInfo.point - trPosCamera, Color.blue);
         
-        if(Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire1"))
         {
             FirePortal(0, trPos, hitInfo.point - trPos, Mathf.Infinity);
         }
@@ -42,17 +42,46 @@ public class PortalPlacement : MonoBehaviour
 
     private void FirePortal(int portalID, Vector3 pos, Vector3 dir, float distance)
     {
-        Physics.Raycast(pos, dir, out var hit, distance, _layerMask);
-        Collider hitCollider = hit.collider;
+        // Obtain mouse position to differentiate between desired hit point and actual hit point.
+        Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
         
-        // Return if surface is not valid, a portal, or a ground surface.
-        if (hitCollider == null || hitCollider.CompareTag("Portal") || !hitCollider.CompareTag("Ground")) return;
+        // Perform raycast ignoring layer mask.
+        Physics.Raycast(ray, out RaycastHit mouseHit, distance, _layerMask);
+
+        RaycastHit hit;
         
-        // Else orient the portal according to camera look direction and surface direction.
+        // Perform raycast from player position to desired point.
+        if (portalID == 0)
+        {
+            Physics.Raycast(pos, dir, out RaycastHit hitInfo, distance, _layerMask);
+            hit = hitInfo;
+        }
+        else
+        {
+            Physics.Raycast(pos, dir, out RaycastHit hitInfo, distance, 
+                1 << LayerMask.NameToLayer("Bottom"));
+            hit = hitInfo;
+        }
+        
+        /* Return if:
+            * Hit surface is null
+            * Surface is not horizontal
+            * Raycast is hitting a different point than mouse point (only when firing portal 0)
+        */
+        switch (portalID)
+        { 
+            case 0 when (ReferenceEquals(null, hit.collider) || hit.normal != new Vector3(0.0f, 1.0f, 0.0f) 
+                                                             || hit.point != mouseHit.point):
+                return;
+            
+            case 1 when (ReferenceEquals(null, hit.collider) || hit.normal != new Vector3(0.0f, 1.0f, 0.0f)):
+                return;
+        }
+        
         Quaternion cameraRotation = _playerMovement.TargetRotation;
         Vector3 portalRight = cameraRotation * Vector3.right;
-            
-        if(Mathf.Abs(portalRight.x) >= Mathf.Abs(portalRight.z))
+
+        if (Mathf.Abs(portalRight.x) >= Mathf.Abs(portalRight.z))
         {
             portalRight = (portalRight.x >= 0) ? Vector3.right : -Vector3.right;
         }
@@ -61,17 +90,21 @@ public class PortalPlacement : MonoBehaviour
             portalRight = (portalRight.z >= 0) ? Vector3.forward : -Vector3.forward;
         }
 
+        // Set portal facing opposite to the hit surface normal and rotate based on camera look direction.
         Vector3 portalForward = -hit.normal;
         Vector3 portalUp = -Vector3.Cross(portalRight, portalForward);
-
         Quaternion portalRotation = Quaternion.LookRotation(portalForward, portalUp);
-            
+
         // Attempt to place the portal.
         bool wasPlaced = _portals.Portals[portalID].PlacePortal(hit.collider, hit.point, portalRotation);
 
-        if(wasPlaced)
-        {
-            // Do something
-        }
+        // if (wasPlaced)
+        // {
+        //     Debug.Log("Portal placed!");
+        // }
+        // else
+        // {
+        //     Debug.Log("Portal not placed!");
+        // }
     }
 }
