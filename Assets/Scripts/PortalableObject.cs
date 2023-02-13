@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
@@ -53,7 +51,7 @@ public class PortalableObject : MonoBehaviour
 
         // Update rotation of object.
         Quaternion relativeRot = Quaternion.Inverse(inTransform.rotation) * transform.rotation;
-        
+
         // If the object is upside down, rotate it 180 degrees around the x and z axes.
         if (relativeRot.eulerAngles is { x: 180f, z: 180f })
         {
