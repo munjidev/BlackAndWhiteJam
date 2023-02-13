@@ -29,8 +29,6 @@ public class Portal : MonoBehaviour
     private void Start()
     {
         _outlineRenderer.material.SetColor(OutlineColour, PortalColour);
-        
-        gameObject.SetActive(false);
     }
 
     private void Update()
@@ -74,7 +72,7 @@ public class Portal : MonoBehaviour
         _testTransform.rotation = rot;
         
         _testTransform.position -= _testTransform.forward * 0.001f;
-
+        
         FixOverhangs();
         FixIntersects();
 
