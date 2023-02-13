@@ -18,8 +18,9 @@ public class PortalPlacement : MonoBehaviour
     {
         Vector3 trPos = transform.position;
         
-        // Attempt to place second portal
+        // Place both portals at default locations
         FirePortal(1, trPos, new Vector3(1.5f, -12f, 1.5f) - trPos, Mathf.Infinity);
+        FirePortal(0, trPos, new Vector3(0.5f, -5f, 7.5f) - trPos, Mathf.Infinity);
     }
 
     private void Update()
