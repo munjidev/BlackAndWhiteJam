@@ -19,7 +19,7 @@ public class PortalPlacement : MonoBehaviour
         Vector3 trPos = transform.position;
         
         // Attempt to place second portal
-        FirePortal(1, trPos, new Vector3(0.5f, -12f, 0.5f) - trPos, Mathf.Infinity);
+        FirePortal(1, trPos, new Vector3(1.5f, -12f, 1.5f) - trPos, Mathf.Infinity);
     }
 
     private void Update()
@@ -58,6 +58,7 @@ public class PortalPlacement : MonoBehaviour
         }
         else
         {
+            // Ignore other layer masks except bottom mask
             Physics.Raycast(pos, dir, out RaycastHit hitInfo, distance, 
                 1 << LayerMask.NameToLayer("Bottom"));
             hit = hitInfo;
