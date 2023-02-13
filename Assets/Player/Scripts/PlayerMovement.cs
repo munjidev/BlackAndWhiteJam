@@ -102,8 +102,9 @@ public class PlayerMovement : MonoBehaviour
     
     private void HandleJump()
     {
-        Debug.DrawRay(transform.position - new Vector3(0f, 0.5f, 0f), Vector3.down, Color.green);
-        
+        // Create ray from transform position to ground
+        Debug.DrawRay(transform.position, Vector3.down, Color.magenta);
+
         // If jumping was performed and the player isn't already jumping
         if (!_isJumping && _isGrounded && _isJumpPressed)
         {
@@ -158,7 +159,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (Physics.Raycast(transform.position, Vector3.down, _distToGround + 0.1f))
+        bool raycast = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo,
+            _distToGround + 0.1f);
+        
+        if (raycast)
         {
             _isGrounded = true;
             _isJumping = false;
