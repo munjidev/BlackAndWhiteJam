@@ -98,13 +98,13 @@ public class PortalPlacement : MonoBehaviour
         // Attempt to place the portal.
         bool wasPlaced = _portals.Portals[portalID].PlacePortal(hit.collider, hit.point, portalRotation);
 
-        // if (wasPlaced)
-        // {
-        //     Debug.Log("Portal placed!");
-        // }
-        // else
-        // {
-        //     Debug.Log("Portal not placed!");
-        // }
+        if (wasPlaced)
+        {
+            Debug.Log("Portal " + portalID + " placed!");
+        }
+        else
+        {
+            Debug.Log("Portal " + portalID + " not placed!");
+        }
     }
 }

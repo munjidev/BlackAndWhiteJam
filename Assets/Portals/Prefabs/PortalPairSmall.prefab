@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1182510840232908522}
   - component: {fileID: 1182510840232908516}
   - component: {fileID: 1182510840232908517}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Portal 1
   m_TagString: Portal
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ MonoBehaviour:
   _outlineRenderer: {fileID: 1182510841146875951}
   _placementMask:
     serializedVersion: 2
-    m_Bits: 1536
+    m_Bits: 3584
   _testTransform: {fileID: 1182510840628077661}
 --- !u!65 &1182510840232908517
 BoxCollider:
@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 1182510840462148743}
   - component: {fileID: 1182510840462148741}
   - component: {fileID: 1182510840462148740}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -183,7 +183,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1182510840628077661}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: TestTransform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -215,7 +215,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1182510841110162767}
   - component: {fileID: 1182510841110162766}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: PortalPairSmall
   m_TagString: Portal
   m_Icon: {fileID: 0}
@@ -262,7 +262,7 @@ GameObject:
   - component: {fileID: 1182510841146875949}
   - component: {fileID: 1182510841146875948}
   - component: {fileID: 1182510841146875951}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Outline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -343,7 +343,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1182510841189305535}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: TestTransform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -378,7 +378,7 @@ GameObject:
   - component: {fileID: 1182510841407360787}
   - component: {fileID: 1182510841407360786}
   - component: {fileID: 1182510841407360813}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Portal 2
   m_TagString: Portal
   m_Icon: {fileID: 0}
@@ -469,7 +469,7 @@ MonoBehaviour:
   _outlineRenderer: {fileID: 1182510841835093248}
   _placementMask:
     serializedVersion: 2
-    m_Bits: 1536
+    m_Bits: 3584
   _testTransform: {fileID: 1182510841189305535}
 --- !u!65 &1182510841407360813
 BoxCollider:
@@ -495,7 +495,7 @@ GameObject:
   - component: {fileID: 1182510841785114767}
   - component: {fileID: 1182510841785114765}
   - component: {fileID: 1182510841785114764}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -550,13 +550,13 @@ GameObject:
   - component: {fileID: 1182510841835093251}
   - component: {fileID: 1182510841835093249}
   - component: {fileID: 1182510841835093248}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Outline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1182510841835093251
 Transform:
   m_ObjectHideFlags: 0
