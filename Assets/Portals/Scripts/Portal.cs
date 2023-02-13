@@ -40,7 +40,7 @@ public class Portal : MonoBehaviour
         foreach (PortalableObject portableObject in _portalObjects)
         {
             Vector3 objPos = transform.InverseTransformPoint(portableObject.transform.position);
-
+            
             if (objPos.z > 0.0f)
             {
                 portableObject.Warp();
