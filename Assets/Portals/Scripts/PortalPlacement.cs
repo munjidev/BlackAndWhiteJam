@@ -2,6 +2,8 @@
 
 public class PortalPlacement : MonoBehaviour
 {
+    public int portalsPlaced;
+    
     [SerializeField] private PortalPair _portals;
     [SerializeField] private LayerMask _layerMask;
 
@@ -100,13 +102,9 @@ public class PortalPlacement : MonoBehaviour
         // Attempt to place the portal.
         bool wasPlaced = _portals.Portals[portalID].PlacePortal(hit.collider, hit.point, portalRotation);
 
-        if (wasPlaced)
+        if (wasPlaced && portalID == 0)
         {
-            Debug.Log("Portal " + portalID + " placed!");
-        }
-        else
-        {
-            Debug.Log("Portal " + portalID + " not placed!");
+            portalsPlaced++;
         }
     }
 }
