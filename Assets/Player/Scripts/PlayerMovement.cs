@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public Quaternion TargetRotation { private set; get; }
+    public int deaths;
     
     [SerializeField] private Rigidbody _rb;
     
@@ -167,6 +168,12 @@ public class PlayerMovement : MonoBehaviour
             _isGrounded = true;
             _isJumping = false;
             _isJumpPressed = false;
+        }
+        
+        if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            transform.position = new Vector3(1.5f, -6.4f, 8.5f);
+            deaths++;
         }
     }
 
