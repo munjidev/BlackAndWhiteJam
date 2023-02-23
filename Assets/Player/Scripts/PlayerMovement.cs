@@ -1,4 +1,5 @@
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -10,10 +11,8 @@ public class PlayerMovement : MonoBehaviour
     
     [SerializeField] private float _movementSpeed = 3.0f;
     [SerializeField] private float _rotationSpeed = 360.0f;
-    
     [SerializeField] private float _jumpHeight = 1.0f;
     [SerializeField] private float _jumpTime = 0.75f;
-
     [SerializeField] private float _gravityGrounded = -0.05f;
     [SerializeField] private float _gravity = -9.81f;
 
@@ -22,7 +21,9 @@ public class PlayerMovement : MonoBehaviour
     private bool _isJumpPressed;
     private bool _isGrounded;
     private bool _isJumping;
+    private bool _canPlay;
     
+    private GameObject _gameOverScreen;
     private LayerMask _layerMask;
     private Vector3 _mouseInput;
     private Vector3 _input;
@@ -35,18 +36,25 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        _gameOverScreen = GameObject.Find("GameOverScreen");
+        _gameOverScreen.SetActive(false);
         _camera = Camera.main;
         TargetRotation = transform.rotation;
         _distToGround = GetComponent<Collider>().bounds.extents.y;
+        _canPlay = true;
     }
 
     private void Update()
     {
+        if (!_canPlay) return;
+        
         GatherInput();
     }
 
     private void FixedUpdate()
     {
+        if (!_canPlay) return;
+        
         MovePlayer();
         LookDirection();
         HandleGravity();
@@ -111,8 +119,10 @@ public class PlayerMovement : MonoBehaviour
         {
             _isJumping = true;
             _isGrounded = false;
+
+            // Lerp movementSpeed to 1.5f
+            _movementSpeed = Mathf.Lerp(_movementSpeed, 1.5f, 0.5f);
             
-            // _rb.AddForce(new Vector3(0f, _jumpVelocity, 0f), ForceMode.VelocityChange);
             _rb.AddForce(new Vector3(0.0f, _jumpVelocity * 0.5f, 0.0f), ForceMode.VelocityChange);
         }
         else if (!_isJumpPressed && _isJumping && _isGrounded)
@@ -168,12 +178,25 @@ public class PlayerMovement : MonoBehaviour
             _isGrounded = true;
             _isJumping = false;
             _isJumpPressed = false;
+            _movementSpeed = 3.0f;
         }
-        
+
         if (collision.gameObject.CompareTag("Obstacle"))
         {
-            transform.position = new Vector3(1.5f, -6.4f, 8.5f);
+            transform.position = new Vector3(1.5f, -6.35f, 8.5f);
+            // Automatically press spacebar
+            _isJumpPressed = true;
             deaths++;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.name == "EndTrigger")
+        {
+            // Find GameOverScreen and set active
+            _gameOverScreen.SetActive(true);
+            _canPlay = false;
         }
     }
 
