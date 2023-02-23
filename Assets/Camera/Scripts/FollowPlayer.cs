@@ -10,13 +10,13 @@ public class FollowPlayer : MonoBehaviour
     {
         if (_moving) return;
         
-        if (player.position.y < -offset.y || player.position.y >= 10f) return;
+        if (player.position.y < -offset.y || player.position.y >= 7f) return;
 
         Vector3 pos = transform.position;
         pos.y = player.position.y + offset.y;
         Vector3 startPos = transform.position;
         _moving = true;
-        StartCoroutine(MoveCamera(startPos, pos, 0.01f));
+        StartCoroutine(MoveCamera(startPos, pos, 0.1f));
     }
     
     // Coroutine to lerp the player to the new position
